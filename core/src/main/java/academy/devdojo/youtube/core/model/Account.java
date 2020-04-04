@@ -1,6 +1,5 @@
 package academy.devdojo.youtube.core.model;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -9,11 +8,7 @@ import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
+import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 
 @Entity
@@ -24,7 +19,8 @@ import javax.validation.constraints.NotNull;
 @ToString
 @EqualsAndHashCode(onlyExplicitlyIncluded = true)
 @JsonInclude(JsonInclude.Include.NON_NULL)
-public class ApplicationUser implements AbstractEntity {
+@Table(name = "account")
+public class Account implements AbstractEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -44,10 +40,10 @@ public class ApplicationUser implements AbstractEntity {
     @Column(nullable = false)
     private String role = "USER";
 
-    public ApplicationUser(ApplicationUser applicationUser) {
-        this.id = applicationUser.id;
-        this.username = applicationUser.username;
-        this.password = applicationUser.password;
-        this.role = applicationUser.role;
+    public Account(Account account) {
+        this.id = account.id;
+        this.username = account.username;
+        this.password = account.password;
+        this.role = account.role;
     }
 }

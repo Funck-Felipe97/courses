@@ -1,6 +1,6 @@
 package academy.devdojo.youtube.security.token;
 
-import academy.devdojo.youtube.core.model.ApplicationUser;
+import academy.devdojo.youtube.core.model.Account;
 import academy.devdojo.youtube.core.property.JwtConfiguration;
 import com.nimbusds.jose.EncryptionMethod;
 import com.nimbusds.jose.JOSEException;
@@ -49,9 +49,9 @@ public class TokenCreator {
     public SignedJWT createSignedJWT(Authentication authentication) {
         log.info("Starting to create the signed JWT");
 
-        ApplicationUser applicationUser = (ApplicationUser) authentication.getPrincipal();
+        Account account = (Account) authentication.getPrincipal();
 
-        JWTClaimsSet jwtClaimSet = createJWTClaimSet(authentication, applicationUser);
+        JWTClaimsSet jwtClaimSet = createJWTClaimSet(authentication, account);
 
         KeyPair keyPair = generateKeyPair();
 
@@ -75,13 +75,13 @@ public class TokenCreator {
         return signedJWT;
     }
 
-    private JWTClaimsSet createJWTClaimSet(Authentication authentication, ApplicationUser applicationUser) {
-        log.info("Creating the JwtClainSet Object for '{}'", applicationUser);
+    private JWTClaimsSet createJWTClaimSet(Authentication authentication, Account account) {
+        log.info("Creating the JwtClainSet Object for '{}'", account);
 
         return new JWTClaimsSet.Builder()
-                .subject(applicationUser.getUsername())
+                .subject(account.getUsername())
                 .claim("authorities", authentication.getAuthorities().stream().map(GrantedAuthority::getAuthority).collect(Collectors.toList()))
-                .claim("userId", applicationUser.getId())
+                .claim("userId", account.getId())
                 .issueTime(new Date())
                 .expirationTime(new Date(System.currentTimeMillis() + (jwtConfiguration.getExpiration() * 1000)))
                 .build();

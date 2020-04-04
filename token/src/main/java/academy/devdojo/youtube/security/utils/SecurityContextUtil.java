@@ -1,12 +1,11 @@
 package academy.devdojo.youtube.security.utils;
 
-import academy.devdojo.youtube.core.model.ApplicationUser;
+import academy.devdojo.youtube.core.model.Account;
 import com.nimbusds.jose.JOSEException;
 import com.nimbusds.jwt.JWTClaimsSet;
 import com.nimbusds.jwt.SignedJWT;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 
@@ -37,14 +36,14 @@ public class SecurityContextUtil {
             }
 
             List<String> authorities = claims.getStringListClaim("authorities");
-            ApplicationUser applicationUser = ApplicationUser
+            Account account = Account
                     .builder()
                     .id(claims.getLongClaim("userId"))
                     .username(username)
                     .role(join(",", authorities))
                     .build();
 
-            UsernamePasswordAuthenticationToken auth = new UsernamePasswordAuthenticationToken(applicationUser, null, createAuthorities(authorities));
+            UsernamePasswordAuthenticationToken auth = new UsernamePasswordAuthenticationToken(account, null, createAuthorities(authorities));
             auth.setDetails(signedJWT.serialize());
 
             SecurityContextHolder.getContext().setAuthentication(auth);

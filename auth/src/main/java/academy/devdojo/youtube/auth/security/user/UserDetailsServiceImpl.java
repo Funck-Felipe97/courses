@@ -1,7 +1,7 @@
 package academy.devdojo.youtube.auth.security.user;
 
-import academy.devdojo.youtube.core.model.ApplicationUser;
-import academy.devdojo.youtube.core.repository.ApplicationUserRepository;
+import academy.devdojo.youtube.core.model.Account;
+import academy.devdojo.youtube.core.repository.AccountRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,13 +19,13 @@ import java.util.Collection;
 @Slf4j
 public class UserDetailsServiceImpl implements UserDetailsService {
 
-    private final ApplicationUserRepository applicationUserRepository;
+    private final AccountRepository accountRepository;
 
     @Override
     public UserDetails loadUserByUsername(String username) {
         log.info("Searching in the DB the user by username '{}'", username);
 
-        ApplicationUser user = applicationUserRepository.findByUsername(username);
+        Account user = accountRepository.findByUsername(username);
 
         log.info("ApplicationUser found '{}'", user);
 
@@ -36,10 +36,10 @@ public class UserDetailsServiceImpl implements UserDetailsService {
         return new CustomUserDetails(user);
     }
 
-    public static class CustomUserDetails extends ApplicationUser implements UserDetails {
+    public static class CustomUserDetails extends Account implements UserDetails {
 
-        public CustomUserDetails(ApplicationUser applicationUser) {
-            super(applicationUser);
+        public CustomUserDetails(Account account) {
+            super(account);
         }
 
         @Override

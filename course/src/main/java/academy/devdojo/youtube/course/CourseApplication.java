@@ -10,8 +10,8 @@ import org.springframework.context.annotation.ComponentScan;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 
 @SpringBootApplication
-@EntityScan({"academy.devdojo.youtube.core.model"})
-@EnableJpaRepositories({"academy.devdojo.youtube.core.repository"})
+@EntityScan({"academy.devdojo.youtube.core.model", "academy.devdojo.youtube.course.model.entity"})
+@EnableJpaRepositories({"academy.devdojo.youtube.core.repository", "academy.devdojo.youtube.course.repository"})
 @EnableEurekaClient
 @EnableConfigurationProperties(value = JwtConfiguration.class)
 @ComponentScan("academy.devdojo.youtube")

@@ -1,7 +1,7 @@
 package academy.devdojo.youtube.course.endpoint.service;
 
-import academy.devdojo.youtube.core.model.Course;
-import academy.devdojo.youtube.core.repository.CourseRepository;
+import academy.devdojo.youtube.course.model.entity.Course;
+import academy.devdojo.youtube.course.repository.CourseRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;

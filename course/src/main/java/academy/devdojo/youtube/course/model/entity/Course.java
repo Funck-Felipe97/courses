@@ -1,5 +1,6 @@
-package academy.devdojo.youtube.core.model;
+package academy.devdojo.youtube.course.model.entity;
 
+import academy.devdojo.youtube.core.model.AbstractEntity;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;

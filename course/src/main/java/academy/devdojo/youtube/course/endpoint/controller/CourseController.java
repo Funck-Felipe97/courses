@@ -1,6 +1,6 @@
 package academy.devdojo.youtube.course.endpoint.controller;
 
-import academy.devdojo.youtube.core.model.Course;
+import academy.devdojo.youtube.course.model.entity.Course;
 import academy.devdojo.youtube.course.endpoint.service.CourseService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;

@@ -1,6 +1,6 @@
 package academy.devdojo.youtube.auth.security.filter;
 
-import academy.devdojo.youtube.core.model.ApplicationUser;
+import academy.devdojo.youtube.core.model.Account;
 import academy.devdojo.youtube.core.property.JwtConfiguration;
 import academy.devdojo.youtube.security.token.TokenCreator;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -43,20 +43,20 @@ public class JwtUsernameAndPasswordAuthenticationFilter extends UsernamePassword
     @Override
     public Authentication attemptAuthentication(HttpServletRequest request, HttpServletResponse response) {
         log.info("Attempting authentication...");
-        ApplicationUser applicationUser = new ObjectMapper().readValue(request.getInputStream(), ApplicationUser.class);
+        Account account = new ObjectMapper().readValue(request.getInputStream(), Account.class);
 
-        if (applicationUser == null) {
+        if (account == null) {
             throw new UsernameNotFoundException("Unable to retrieve the username password");
         }
 
-        log.info("Creating the authentication object for te user '{}' and calling UserDetailsServiceImpl loadUserByUsername", applicationUser.getUsername());
+        log.info("Creating the authentication object for te user '{}' and calling UserDetailsServiceImpl loadUserByUsername", account.getUsername());
 
         UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken = new UsernamePasswordAuthenticationToken(
-                applicationUser.getUsername(),
-                applicationUser.getPassword(),
+                account.getUsername(),
+                account.getPassword(),
                 Collections.emptyList());
 
-        usernamePasswordAuthenticationToken.setDetails(applicationUser);
+        usernamePasswordAuthenticationToken.setDetails(account);
 
         return authenticationManager.authenticate(usernamePasswordAuthenticationToken);
     }

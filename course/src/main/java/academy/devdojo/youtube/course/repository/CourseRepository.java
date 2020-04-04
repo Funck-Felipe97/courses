@@ -1,6 +1,6 @@
-package academy.devdojo.youtube.core.repository;
+package academy.devdojo.youtube.course.repository;
 
-import academy.devdojo.youtube.core.model.Course;
+import academy.devdojo.youtube.course.model.entity.Course;
 import org.springframework.data.repository.PagingAndSortingRepository;
 import org.springframework.stereotype.Repository;
 
