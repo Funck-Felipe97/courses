@@ -1,0 +1,76 @@
+version: '3.1'
+services:
+  db:
+    image: mysql
+    command: --default-authentication-plugin=mysql_native_password
+    container_name: db
+    ports:
+      - 3307:3306
+    environment:
+      MYSQL_USER: root
+      MYSQL_ROOT_PASSWORD: felipe
+    volumes:
+      - microservices_devdojo:/var/lib/mysql
+    networks:
+      - microservices_net
+  discovery:
+    build: ../discovery/
+    restart: on-failure
+    container_name: discovery
+    image: discovery
+    ports:
+      - "8081:8081"
+    depends_on:
+      - db
+    networks:
+      - microservices_net
+  gateway:
+    build: ../gateway/
+    restart: on-failure
+    container_name: gateway
+    image: gateway
+    ports:
+      - "8080:8080"
+    depends_on:
+      - db
+      - discovery
+    networks:
+      - microservices_net
+    environment:
+      - eureka.client.service-url.defaultZone=http://discovery:8081/eureka/
+  course:
+    build: ../course/
+    restart: on-failure
+    container_name: course
+    image: course
+    ports:
+      - "8082:8082"
+    depends_on:
+      - db
+      - discovery
+      - gateway
+    networks:
+      - microservices_net
+    environment:
+      - eureka.client.service-url.defaultZone=http://discovery:8081/eureka/
+      - spring.datasource.url=jdbc:mysql://db:3306/devdojo?createDatabaseIfNotExist=true&allowPublicKeyRetrieval=true&sslMode=DISABLED
+  auth:
+    build: ../auth/
+    restart: on-failure
+    container_name: auth
+    image: auth
+    ports:
+      - "8083:8083"
+    depends_on:
+      - db
+      - discovery
+      - gateway
+    networks:
+      - microservices_net
+    environment:
+      - eureka.client.service-url.defaultZone=http://discovery:8081/eureka/
+      - spring.datasource.url=jdbc:mysql://db:3306/devdojo?createDatabaseIfNotExist=true&allowPublicKeyRetrieval=true&sslMode=DISABLED
+volumes:
+  microservices_devdojo:
+networks:
+  microservices_net:
