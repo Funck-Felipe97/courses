@@ -9,7 +9,7 @@ import springfox.documentation.swagger2.annotations.EnableSwagger2;
 public class SwaggerConfig extends BaseSwaggerConfig {
 
     public SwaggerConfig() {
-        super("academy.devdojo.youtube.course.endpoint.controller");
+        super("academy.devdojo.youtube.course.endpoint.resource");
     }
 
 }

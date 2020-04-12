@@ -2,6 +2,7 @@ package academy.devdojo.youtube.course.model.entity;
 
 import academy.devdojo.youtube.core.model.AbstractEntity;
 import academy.devdojo.youtube.core.model.Account;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -20,8 +21,10 @@ import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
+import javax.validation.constraints.NotNull;
 import java.util.List;
 
+@JsonIgnoreProperties(ignoreUnknown = true, value = {"courses"})
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
@@ -43,6 +46,7 @@ public class Student implements AbstractEntity {
     @Column(nullable = false)
     private String lastName;
 
+    @NotNull(message = "The student account can not be null")
     @JoinColumn(name = "account_id")
     @OneToOne(cascade = CascadeType.PERSIST)
     private Account account;

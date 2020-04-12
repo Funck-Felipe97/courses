@@ -1,6 +1,7 @@
 package academy.devdojo.youtube.course.model.entity;
 
 import academy.devdojo.youtube.core.model.AbstractEntity;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -17,6 +18,7 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
+@JsonIgnoreProperties(ignoreUnknown = true, value = "section")
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
@@ -31,8 +33,8 @@ public class Lesson implements AbstractEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @EqualsAndHashCode.Include
     private Long id;
-
     private String name;
+    private String videoUrl;
 
     @JoinColumn(name = "section_id")
     @ManyToOne(fetch = FetchType.LAZY)

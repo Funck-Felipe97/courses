@@ -1,6 +1,7 @@
 package academy.devdojo.youtube.course.model.entity;
 
 import academy.devdojo.youtube.core.model.AbstractEntity;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -22,6 +23,7 @@ import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.List;
 
+@JsonIgnoreProperties(ignoreUnknown = true, value = {"sections"})
 @Entity
 @Data
 @AllArgsConstructor
@@ -40,21 +42,23 @@ public class Course implements AbstractEntity {
     @NotBlank(message = "Course name can not be null")
     private String name;
 
+    @Column(nullable = false)
+    @NotBlank(message = "Course description can not be null")
     private String description;
+
+    private String imageUrl;
 
     @CreationTimestamp
     @Column(nullable = false)
-    @NotBlank(message = "Course created at can not be null")
-    private LocalDateTime cratedAt;
+    private LocalDateTime createdAt;
 
     @UpdateTimestamp
     @Column(nullable = false)
-    @NotBlank(message = "Course last updated can not be null")
     private LocalDateTime lastUpdate;
 
     private Duration duration;
 
-    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, mappedBy = "course")
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "course")
     private List<Section> sections;
 
 }

@@ -1,6 +1,7 @@
 package academy.devdojo.youtube.course.model.entity;
 
 import academy.devdojo.youtube.core.model.AbstractEntity;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -20,6 +21,7 @@ import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import java.util.List;
 
+@JsonIgnoreProperties(ignoreUnknown = true, value = {"lessons", "course"})
 @Data
 @NoArgsConstructor
 @AllArgsConstructor

@@ -21,4 +21,9 @@ public class StudentServiceImpl implements StudentService {
         return studentRepository;
     }
 
+    @Override
+    public Class<Student> getClazz() {
+        return Student.class;
+    }
+
 }
