@@ -20,6 +20,11 @@ spring:
     url: jdbc:mysql://localhost:3307/devdojo?createDatabaseIfNotExist=true&allowPublicKeyRetrieval=true&sslMode=DISABLED
     username: root
     password: felipe
+  jackson:
+    serialization:
+      fail-on-empty-beans: false
+    deserialization:
+      fail-on-unknown-properties: true
 
 eureka:
   instance:
@@ -33,3 +38,4 @@ eureka:
 jwt:
   config:
     type: signed
+

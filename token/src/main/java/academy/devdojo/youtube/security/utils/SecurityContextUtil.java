@@ -60,4 +60,8 @@ public class SecurityContextUtil {
                 .collect(Collectors.toList());
     }
 
+    public static Account getAuthenticationAccount() {
+        return (Account) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+    }
+
 }

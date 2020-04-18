@@ -1,8 +1,14 @@
 package academy.devdojo.youtube.course.endpoint.service;
 
+import academy.devdojo.youtube.course.endpoint.service.interfaces.CourseService;
+import academy.devdojo.youtube.course.endpoint.service.interfaces.StudentService;
 import academy.devdojo.youtube.course.endpoint.service.interfaces.SubscriptionService;
+import academy.devdojo.youtube.course.model.entity.Course;
+import academy.devdojo.youtube.course.model.entity.Student;
 import academy.devdojo.youtube.course.model.entity.Subscription;
+import academy.devdojo.youtube.course.model.entity.SubscriptionID;
 import academy.devdojo.youtube.course.repository.SubscriptionRepository;
+import academy.devdojo.youtube.security.utils.SecurityContextUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,10 +21,21 @@ import org.springframework.stereotype.Service;
 public class SubscriptionServiceImpl implements SubscriptionService {
 
     private final SubscriptionRepository subscriptionRepository;
+    private final StudentService studentService;
+    private final CourseService courseService;
 
     @Override
     public void register(Long courseId) {
-
+        Course course = courseService.findOne(courseId);
+        Student student = studentService.findOneByAccount(SecurityContextUtil.getAuthenticationAccount().getId());
+        SubscriptionID subscriptionID = new SubscriptionID(course, student);
+        findById(subscriptionID).ifPresentOrElse(subscription -> {
+            throw new RuntimeException("Student already subscribed in course: " + courseId);
+        }, () -> {
+            Subscription subscription = new Subscription();
+            subscription.setId(subscriptionID);
+            save(subscription);
+        });
     }
 
     @Override

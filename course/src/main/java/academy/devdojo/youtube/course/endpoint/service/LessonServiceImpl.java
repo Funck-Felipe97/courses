@@ -43,9 +43,7 @@ public class LessonServiceImpl implements LessonService {
 
     @Override
     public Optional<Lesson> findByIdAndSectionAndCourse(Long id, Long sectionId, Long courseId) {
-        Section section = sectionService.findByIdAndCourse(sectionId, courseId).orElseThrow(() ->
-                new NoSuchElementException("Section not found with id: " + sectionId));
-
+        Section section = sectionService.findOneByIdAndCourse(sectionId, courseId);
         return lessonRepository.findByIdAndSection(id, section);
     }
 
@@ -53,7 +51,6 @@ public class LessonServiceImpl implements LessonService {
     public Lesson update(Long id, Lesson lesson, Long sectionId, Long courseId) {
         Lesson savedLesson = findByIdAndSectionAndCourse(id, sectionId, courseId).orElseThrow(() ->
                 new NoSuchElementException("Lesson not found with id: " + sectionId));
-
         String[] ignoreProperties = new String[]{"id", "section"};
         BeanUtils.copyProperties(lesson, savedLesson, ignoreProperties);
         return save(savedLesson);
@@ -61,9 +58,7 @@ public class LessonServiceImpl implements LessonService {
 
     @Override
     public void deleteByIdAndSectionAndCourse(Long id, Long sectionId, Long courseId) {
-        Section section = sectionService.findByIdAndCourse(sectionId, courseId).orElseThrow(() ->
-                new NoSuchElementException("Section not found with id: " + sectionId));
-
+        Section section = sectionService.findOneByIdAndCourse(sectionId, courseId);
         lessonRepository.deleteByIdAndSection(id, section);
     }
 

@@ -1,6 +1,7 @@
 package academy.devdojo.youtube.course.endpoint.resource;
 
 import academy.devdojo.youtube.course.endpoint.service.interfaces.CourseService;
+import academy.devdojo.youtube.course.endpoint.service.interfaces.SubscriptionService;
 import academy.devdojo.youtube.course.model.entity.Course;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -30,6 +31,7 @@ import java.util.Optional;
 public class CourseResource {
 
     private final CourseService courseService;
+    private final SubscriptionService subscriptionService;
 
     @GetMapping
     @ApiOperation("List all available courses")
@@ -60,6 +62,12 @@ public class CourseResource {
     @ApiOperation("Delete course by id")
     public void deleteById(@PathVariable final Long id) {
         courseService.deleteById(id);
+    }
+
+    @PostMapping("/{id}/subscribe")
+    @ApiOperation("Subscribe logged stundent in course")
+    public void subscribe(@PathVariable("id") final Long courseId) {
+        subscriptionService.register(courseId);
     }
 
 }

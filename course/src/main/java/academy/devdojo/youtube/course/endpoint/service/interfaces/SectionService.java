@@ -14,6 +14,9 @@ public interface SectionService extends GenericService<Section, Long> {
     Optional<Section> findByIdAndCourse(Long id, Long courseId);
 
     @Transactional(readOnly = true)
+    Section findOneByIdAndCourse(Long id, Long courseId);
+
+    @Transactional(readOnly = true)
     List<Section> findAllByCourse(Long courseId);
 
     @Transactional(propagation = Propagation.REQUIRED)

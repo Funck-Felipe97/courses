@@ -10,9 +10,10 @@ import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
 
-import javax.persistence.CascadeType;
+import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -24,7 +25,7 @@ import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
 import java.util.List;
 
-@JsonIgnoreProperties(ignoreUnknown = true, value = {"courses"})
+@JsonIgnoreProperties(ignoreUnknown = true,value = {"courses", "account", "hibernateLazyInitializer"})
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
@@ -46,9 +47,10 @@ public class Student implements AbstractEntity {
     @Column(nullable = false)
     private String lastName;
 
+    @Basic(optional = false)
     @NotNull(message = "The student account can not be null")
     @JoinColumn(name = "account_id")
-    @OneToOne(cascade = CascadeType.PERSIST)
+    @OneToOne(fetch = FetchType.LAZY, optional = false)
     private Account account;
 
     @ManyToMany

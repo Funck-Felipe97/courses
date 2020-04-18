@@ -31,6 +31,12 @@ public class SectionServiceImpl implements SectionService {
     }
 
     @Override
+    public Section findOneByIdAndCourse(Long id, Long courseId) {
+        return findByIdAndCourse(id, courseId).orElseThrow(() ->
+                new NoSuchElementException("Section not found with id: " + id));
+    }
+
+    @Override
     public List<Section> findAllByCourse(final Long courseId) {
         Course course = courseService.findOne(courseId);
         return sectionRepository.findAllByCourse(course);
@@ -45,7 +51,8 @@ public class SectionServiceImpl implements SectionService {
 
     @Override
     public Section update(final Long id, final Long courseId, final Section section) {
-        Section savedSection = findByIdAndCourse(id, courseId).orElseThrow(() -> new NoSuchElementException("Section not found with id: " + id));
+        Section savedSection = findByIdAndCourse(id, courseId)
+                .orElseThrow(() -> new NoSuchElementException("Section not found with id: " + id));
         String[] ignoreProperties = new String[]{"id", "lessons", "course"};
         BeanUtils.copyProperties(section, savedSection, ignoreProperties);
         return save(savedSection);

@@ -21,6 +21,12 @@ spring:
     username: root
     password: felipe
 
+  jackson:
+    serialization:
+      fail-on-empty-beans: false
+    deserialization:
+      fail-on-unknown-properties: true
+
 eureka:
   instance:
     prefer-ip-address: true
