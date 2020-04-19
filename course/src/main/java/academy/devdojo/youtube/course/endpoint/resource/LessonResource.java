@@ -1,9 +1,11 @@
 package academy.devdojo.youtube.course.endpoint.resource;
 
+import academy.devdojo.youtube.core.event.ResourceCreatedEvent;
 import academy.devdojo.youtube.course.endpoint.service.interfaces.LessonService;
 import academy.devdojo.youtube.course.model.entity.Lesson;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -15,6 +17,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 import java.util.List;
 import java.util.Optional;
@@ -25,6 +28,7 @@ import java.util.Optional;
 public class LessonResource {
 
     private final LessonService lessonService;
+    private final ApplicationEventPublisher publisher;
 
     @GetMapping
     public ResponseEntity<List<Lesson>> findAll(
@@ -37,8 +41,11 @@ public class LessonResource {
     public ResponseEntity<Lesson> save(
             @PathVariable final Long courseId,
             @PathVariable final Long sectionId,
-            @RequestBody @Valid final Lesson lesson) {
-        return new ResponseEntity(lessonService.save(lesson, courseId, sectionId), HttpStatus.CREATED);
+            @RequestBody @Valid final Lesson lesson,
+            final HttpServletResponse response) {
+        Lesson savedLesson = lessonService.save(lesson, courseId, sectionId);
+        publisher.publishEvent(new ResourceCreatedEvent(savedLesson.getId(), response));
+        return new ResponseEntity(savedLesson, HttpStatus.CREATED);
     }
 
     @GetMapping("/{id}")

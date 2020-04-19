@@ -1,9 +1,11 @@
 package academy.devdojo.youtube.course.endpoint.resource;
 
+import academy.devdojo.youtube.core.event.ResourceCreatedEvent;
 import academy.devdojo.youtube.course.endpoint.service.interfaces.StudentService;
 import academy.devdojo.youtube.course.model.entity.Student;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -15,6 +17,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 import java.util.List;
 import java.util.Optional;
@@ -25,6 +28,7 @@ import java.util.Optional;
 public class StudentResource {
 
     private final StudentService studentService;
+    private final ApplicationEventPublisher publisher;
 
     @GetMapping
     public ResponseEntity<List<Student>> findAll() {
@@ -32,8 +36,10 @@ public class StudentResource {
     }
 
     @PostMapping
-    public ResponseEntity<Student> save(@RequestBody @Valid final Student student) {
-        return new ResponseEntity(studentService.save(student), HttpStatus.CREATED);
+    public ResponseEntity<Student> save(@RequestBody @Valid final Student student, final HttpServletResponse response) {
+        Student savedStudent = studentService.save(student);
+        publisher.publishEvent(new ResourceCreatedEvent(savedStudent.getId(), response));
+        return new ResponseEntity(savedStudent, HttpStatus.CREATED);
     }
 
     @GetMapping("/{id}")

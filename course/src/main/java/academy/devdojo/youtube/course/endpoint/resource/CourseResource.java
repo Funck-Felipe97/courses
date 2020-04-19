@@ -1,5 +1,6 @@
 package academy.devdojo.youtube.course.endpoint.resource;
 
+import academy.devdojo.youtube.core.event.ResourceCreatedEvent;
 import academy.devdojo.youtube.course.endpoint.service.interfaces.CourseService;
 import academy.devdojo.youtube.course.endpoint.service.interfaces.SubscriptionService;
 import academy.devdojo.youtube.course.model.entity.Course;
@@ -8,6 +9,7 @@ import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -19,6 +21,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 import java.util.List;
 import java.util.Optional;
@@ -32,6 +35,7 @@ public class CourseResource {
 
     private final CourseService courseService;
     private final SubscriptionService subscriptionService;
+    private final ApplicationEventPublisher publisher;
 
     @GetMapping
     @ApiOperation("List all available courses")
@@ -41,8 +45,10 @@ public class CourseResource {
 
     @PostMapping
     @ApiOperation("Save new course")
-    public ResponseEntity<Course> save(@RequestBody @Valid final Course course) {
-        return new ResponseEntity(courseService.save(course), HttpStatus.CREATED);
+    public ResponseEntity<Course> save(@RequestBody @Valid final Course course, final HttpServletResponse response) {
+        Course savedCourse = courseService.save(course);
+        publisher.publishEvent(new ResourceCreatedEvent(course.getId(), response));
+        return new ResponseEntity(savedCourse, HttpStatus.CREATED);
     }
 
     @GetMapping("/{id}")
