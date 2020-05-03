@@ -3,7 +3,10 @@ package academy.devdojo.youtube.course.endpoint.resource;
 import academy.devdojo.youtube.core.event.ResourceCreatedEvent;
 import academy.devdojo.youtube.course.endpoint.service.interfaces.CourseService;
 import academy.devdojo.youtube.course.endpoint.service.interfaces.SubscriptionService;
+import academy.devdojo.youtube.course.model.dto.request.CourseRequest;
+import academy.devdojo.youtube.course.model.dto.response.CourseResponse;
 import academy.devdojo.youtube.course.model.entity.Course;
+import academy.devdojo.youtube.course.model.mapper.CourseMapper;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
@@ -34,36 +37,37 @@ import java.util.Optional;
 @Api("Endpoints to manage courses")
 public class CourseResource {
 
+    private final CourseMapper courseMapper;
     private final CourseService courseService;
     private final SubscriptionService subscriptionService;
     private final ApplicationEventPublisher publisher;
 
     @GetMapping
     @ApiOperation("List all available courses")
-    public ResponseEntity<List<Course>> findAll() {
-        return new ResponseEntity(courseService.findAll(), HttpStatus.OK);
+    public ResponseEntity<List<CourseResponse>> findAll() {
+        return new ResponseEntity(toResponseList(courseService.findAll()), HttpStatus.OK);
     }
 
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     @PostMapping
     @ApiOperation("Save new course")
-    public ResponseEntity<Course> save(@RequestBody @Valid final Course course, final HttpServletResponse response) {
-        Course savedCourse = courseService.save(course);
-        publisher.publishEvent(new ResourceCreatedEvent(course.getId(), response));
-        return new ResponseEntity(savedCourse, HttpStatus.CREATED);
+    public ResponseEntity<CourseResponse> save(@RequestBody @Valid final CourseRequest course, final HttpServletResponse response) {
+        Course savedCourse = courseService.save(toEntity(course));
+        publisher.publishEvent(new ResourceCreatedEvent(savedCourse.getId(), response));
+        return new ResponseEntity(toResponse(savedCourse), HttpStatus.CREATED);
     }
 
     @GetMapping("/{id}")
     @ApiOperation("Find course by id")
     public ResponseEntity<?> findById(@PathVariable final Long id) {
         Optional<Course> course = courseService.findById(id);
-        return course.isPresent() ? ResponseEntity.ok(course.get()) : ResponseEntity.noContent().build();
+        return course.isPresent() ? ResponseEntity.ok(toResponse(course.get())) : ResponseEntity.noContent().build();
     }
 
     @PutMapping("/{id}")
     @ApiOperation("Update course by id")
-    public ResponseEntity<Course> update(@PathVariable final Long id, @RequestBody @Valid final Course course) {
-        return ResponseEntity.ok(courseService.update(id, course));
+    public ResponseEntity<CourseResponse> update(@PathVariable final Long id, @RequestBody @Valid final CourseRequest course) {
+        return ResponseEntity.ok(toResponse(courseService.update(id, toEntity(course))));
     }
 
     @DeleteMapping("/{id}")
@@ -76,6 +80,18 @@ public class CourseResource {
     @ApiOperation("Subscribe logged stundent in course")
     public void subscribe(@PathVariable("id") final Long courseId) {
         subscriptionService.register(courseId);
+    }
+
+    private Course toEntity(final CourseRequest request) {
+        return courseMapper.toEntity(request);
+    }
+
+    private List<CourseResponse> toResponseList(final List<Course> courses) {
+        return courseMapper.toResponseList(courses);
+    }
+
+    private CourseResponse toResponse(final Course course) {
+        return courseMapper.toResponse(course);
     }
 
 }

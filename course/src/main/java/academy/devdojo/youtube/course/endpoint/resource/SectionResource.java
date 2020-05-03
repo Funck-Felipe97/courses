@@ -2,7 +2,10 @@ package academy.devdojo.youtube.course.endpoint.resource;
 
 import academy.devdojo.youtube.core.event.ResourceCreatedEvent;
 import academy.devdojo.youtube.course.endpoint.service.interfaces.SectionService;
+import academy.devdojo.youtube.course.model.dto.request.SectionRequest;
+import academy.devdojo.youtube.course.model.dto.response.SectionResponse;
 import academy.devdojo.youtube.course.model.entity.Section;
+import academy.devdojo.youtube.course.model.mapper.SectionMapper;
 import io.swagger.annotations.Api;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -33,34 +36,48 @@ public class SectionResource {
 
     private final SectionService sectionService;
     private final ApplicationEventPublisher publisher;
+    private final SectionMapper mapper;
 
     @GetMapping
-    public ResponseEntity<List<Section>> findAllByCourse(@PathVariable final Long courseId) {
-        return ResponseEntity.ok(sectionService.findAllByCourse(courseId));
+    public ResponseEntity<List<SectionResponse>> findAllByCourse(@PathVariable final Long courseId) {
+        return ResponseEntity.ok(toResponseList(sectionService.findAllByCourse(courseId)));
     }
 
     @PostMapping
-    public ResponseEntity<Section> save(@PathVariable final Long courseId, @RequestBody @Valid Section section,
+    public ResponseEntity<SectionResponse> save(@PathVariable final Long courseId, @RequestBody @Valid SectionRequest section,
                                         final HttpServletResponse response) {
-        Section savedSection = sectionService.save(courseId, section);
-        publisher.publishEvent(new ResourceCreatedEvent(section.getId(), response));
-        return new ResponseEntity(savedSection, HttpStatus.CREATED);
+        Section savedSection = sectionService.save(courseId, toEntity(section));
+        publisher.publishEvent(new ResourceCreatedEvent(savedSection.getId(), response));
+        return new ResponseEntity(toResponse(savedSection), HttpStatus.CREATED);
     }
 
     @GetMapping("/{id}")
     public ResponseEntity<?> findById(@PathVariable final Long courseId, @PathVariable final Long id) {
         Optional<Section> section = sectionService.findByIdAndCourse(id, courseId);
-        return section.isPresent() ? ResponseEntity.ok(section.get()) : ResponseEntity.noContent().build();
+        return section.isPresent() ? ResponseEntity.ok(toResponse(section.get())) : ResponseEntity.noContent().build();
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Section> update(@PathVariable final Long courseId, @PathVariable final Long id, @RequestBody @Valid Section section) {
-        return ResponseEntity.ok(sectionService.update(id, courseId, section));
+    public ResponseEntity<SectionResponse> update(@PathVariable final Long courseId, @PathVariable final Long id, @RequestBody @Valid SectionRequest section) {
+        Section updatedSection = sectionService.update(id, courseId, toEntity(section));
+        return ResponseEntity.ok(toResponse(updatedSection));
     }
 
     @DeleteMapping("/{id}")
     public void deleteById(@PathVariable final Long courseId, @PathVariable final Long id) {
         sectionService.deleteByIdAndCouse(id, courseId);
+    }
+
+    private List<SectionResponse> toResponseList(final List<Section> sections) {
+        return mapper.toResponseList(sections);
+    }
+
+    private SectionResponse toResponse(final Section section) {
+        return mapper.toResponse(section);
+    }
+
+    private Section toEntity(final SectionRequest sectionRequest) {
+        return mapper.toEntity(sectionRequest);
     }
 
 }

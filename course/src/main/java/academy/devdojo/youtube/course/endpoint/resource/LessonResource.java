@@ -2,7 +2,10 @@ package academy.devdojo.youtube.course.endpoint.resource;
 
 import academy.devdojo.youtube.core.event.ResourceCreatedEvent;
 import academy.devdojo.youtube.course.endpoint.service.interfaces.LessonService;
+import academy.devdojo.youtube.course.model.dto.request.LessonRequest;
+import academy.devdojo.youtube.course.model.dto.response.LessonResponse;
 import academy.devdojo.youtube.course.model.entity.Lesson;
+import academy.devdojo.youtube.course.model.mapper.LessonMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationEventPublisher;
@@ -29,23 +32,24 @@ public class LessonResource {
 
     private final LessonService lessonService;
     private final ApplicationEventPublisher publisher;
+    private final LessonMapper lessonMapper;
 
     @GetMapping
-    public ResponseEntity<List<Lesson>> findAll(
+    public ResponseEntity<List<LessonResponse>> findAll(
             @PathVariable final Long courseId,
             @PathVariable final Long sectionId) {
-        return ResponseEntity.ok(lessonService.findByCourseAndSection(courseId, sectionId));
+        return ResponseEntity.ok(toResponseList(lessonService.findByCourseAndSection(courseId, sectionId)));
     }
 
     @PostMapping
-    public ResponseEntity<Lesson> save(
+    public ResponseEntity<LessonResponse> save(
             @PathVariable final Long courseId,
             @PathVariable final Long sectionId,
-            @RequestBody @Valid final Lesson lesson,
+            @RequestBody @Valid final LessonRequest lesson,
             final HttpServletResponse response) {
-        Lesson savedLesson = lessonService.save(lesson, courseId, sectionId);
+        Lesson savedLesson = lessonService.save(toEntity(lesson), courseId, sectionId);
         publisher.publishEvent(new ResourceCreatedEvent(savedLesson.getId(), response));
-        return new ResponseEntity(savedLesson, HttpStatus.CREATED);
+        return new ResponseEntity(toResponse(savedLesson), HttpStatus.CREATED);
     }
 
     @GetMapping("/{id}")
@@ -54,7 +58,7 @@ public class LessonResource {
             @PathVariable final Long sectionId,
             @PathVariable final Long id) {
         Optional<Lesson> lesson = lessonService.findByIdAndSectionAndCourse(id, sectionId, courseId);
-        return lesson.isPresent() ? ResponseEntity.ok(lesson.get()) : ResponseEntity.noContent().build();
+        return lesson.isPresent() ? ResponseEntity.ok(toResponse(lesson.get())) : ResponseEntity.noContent().build();
     }
 
     @PutMapping("/{id}")
@@ -62,8 +66,9 @@ public class LessonResource {
             @PathVariable final Long courseId,
             @PathVariable final Long sectionId,
             @PathVariable final Long id,
-            @RequestBody @Valid final Lesson lesson) {
-        return ResponseEntity.ok(lessonService.update(id, lesson, sectionId, courseId));
+            @RequestBody @Valid final LessonRequest lesson) {
+        Lesson updateLesson = lessonService.update(id, toEntity(lesson), sectionId, courseId);
+        return ResponseEntity.ok(toResponse(updateLesson));
     }
 
     @DeleteMapping("/{id}")
@@ -72,6 +77,18 @@ public class LessonResource {
             @PathVariable final Long sectionId,
             @PathVariable final Long id) {
         lessonService.deleteByIdAndSectionAndCourse(id, sectionId, courseId);
+    }
+
+    private List<LessonResponse> toResponseList(final List<Lesson> lessons) {
+        return lessonMapper.toResponseList(lessons);
+    }
+
+    private LessonResponse toResponse(final Lesson lesson) {
+        return lessonMapper.toResponse(lesson);
+    }
+
+    private Lesson toEntity(final LessonRequest lessonRequest) {
+        return lessonMapper.toEntity(lessonRequest);
     }
 
 }
