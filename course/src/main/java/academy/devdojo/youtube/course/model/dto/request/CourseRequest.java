@@ -14,10 +14,8 @@ public class CourseRequest {
 
     @NotBlank(message = "Course name can not be null")
     private String name;
-
     @NotBlank(message = "Course description can not be null")
     private String description;
-
     private String imageUrl;
     private Duration duration;
 

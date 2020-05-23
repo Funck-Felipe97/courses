@@ -5,6 +5,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import javax.validation.Valid;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 
@@ -20,6 +21,7 @@ public class StudentRequest {
     @NotBlank(message = "The student last name can not be empty")
     private String lastName;
 
+    @Valid
     @NotNull(message = "The student account can not be null")
     private AccountRequest account;
 
