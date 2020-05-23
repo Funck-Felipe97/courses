@@ -20,22 +20,22 @@ public class SectionMapper implements ResponseMapper<Section, SectionResponse>, 
     private final ModelMapper mapper;
 
     @Override
-    public Section toEntity(SectionRequest sectionRequest) {
+    public Section toEntity(final SectionRequest sectionRequest) {
         return mapper.map(sectionRequest, Section.class);
     }
 
     @Override
-    public List<Section> toEntityList(List<SectionRequest> sectionRequests) {
+    public List<Section> toEntityList(final List<SectionRequest> sectionRequests) {
         return sectionRequests.stream().map(this::toEntity).collect(Collectors.toList());
     }
 
     @Override
-    public SectionResponse toResponse(Section section) {
+    public SectionResponse toResponse(final Section section) {
         return mapper.map(section, SectionResponse.class);
     }
 
     @Override
-    public List<SectionResponse> toResponseList(List<Section> sections) {
+    public List<SectionResponse> toResponseList(final List<Section> sections) {
         return sections.stream().map(this::toResponse).collect(Collectors.toList());
     }
 

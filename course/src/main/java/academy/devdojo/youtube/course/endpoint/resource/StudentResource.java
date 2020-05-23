@@ -2,7 +2,10 @@ package academy.devdojo.youtube.course.endpoint.resource;
 
 import academy.devdojo.youtube.core.event.ResourceCreatedEvent;
 import academy.devdojo.youtube.course.endpoint.service.interfaces.StudentService;
+import academy.devdojo.youtube.course.model.dto.request.StudentRequest;
+import academy.devdojo.youtube.course.model.dto.response.StudentResponse;
 import academy.devdojo.youtube.course.model.entity.Student;
+import academy.devdojo.youtube.course.model.mapper.StudentMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationEventPublisher;
@@ -29,23 +32,25 @@ public class StudentResource {
 
     private final StudentService studentService;
     private final ApplicationEventPublisher publisher;
+    private final StudentMapper mapper;
 
     @GetMapping
-    public ResponseEntity<List<Student>> findAll() {
-        return ResponseEntity.ok(studentService.findAll());
+    public ResponseEntity<List<StudentResponse>> findAll() {
+        final List<StudentResponse> studentResponses = toResponseList(studentService.findAll());
+        return ResponseEntity.ok(studentResponses);
     }
 
     @PostMapping
-    public ResponseEntity<Student> save(@RequestBody @Valid final Student student, final HttpServletResponse response) {
-        Student savedStudent = studentService.save(student);
+    public ResponseEntity<StudentResponse> save(@RequestBody @Valid final StudentRequest student, final HttpServletResponse response) {
+        Student savedStudent = studentService.save(toEntity(student));
         publisher.publishEvent(new ResourceCreatedEvent(savedStudent.getId(), response));
-        return new ResponseEntity(savedStudent, HttpStatus.CREATED);
+        return new ResponseEntity(toResponse(savedStudent), HttpStatus.CREATED);
     }
 
     @GetMapping("/{id}")
     public ResponseEntity<?> findById(@PathVariable final Long id) {
         Optional<Student> student = studentService.findById(id);
-        return student.isPresent() ? ResponseEntity.ok(student.get()) : ResponseEntity.noContent().build();
+        return student.isPresent() ? ResponseEntity.ok(toResponse(student.get())) : ResponseEntity.noContent().build();
     }
 
     @PutMapping("/{id}")
@@ -56,6 +61,18 @@ public class StudentResource {
     @DeleteMapping("/{id}")
     public void deleteById(@PathVariable final Long id) {
         studentService.deleteById(id);
+    }
+
+    private Student toEntity(final StudentRequest request) {
+        return mapper.toEntity(request);
+    }
+
+    private List<StudentResponse> toResponseList(final List<Student> students) {
+        return mapper.toResponseList(students);
+    }
+
+    private StudentResponse toResponse(final Student student) {
+        return mapper.toResponse(student);
     }
 
 }
