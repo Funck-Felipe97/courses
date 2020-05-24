@@ -30,7 +30,6 @@ public class SecurityTokenConfig extends WebSecurityConfigurerAdapter {
                     .antMatchers(jwtConfiguration.getLoginUrl(), "/**/swagger-ui.html", "/**/user/**").permitAll()
                     .antMatchers(HttpMethod.GET, "/**/swagger-resources/**", "/**/webjars/springfox-swagger-ui/**", "/**/v2/api-docs/**").permitAll()
                     .antMatchers("/course/v1/admin/**").hasRole("ADMIN")
-                    .antMatchers("/auth/user/info").authenticated()
                     .anyRequest().authenticated();
     }
 
