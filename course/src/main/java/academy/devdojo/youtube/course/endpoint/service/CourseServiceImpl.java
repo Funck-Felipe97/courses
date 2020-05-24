@@ -10,6 +10,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Slf4j
 @RequiredArgsConstructor(onConstructor = @__(@Autowired))
 @Service
@@ -23,6 +25,11 @@ public class CourseServiceImpl implements CourseService {
         String[] ignoreProperties = new String[]{"id", "createdAt", "lastUpdate", "sections"};
         BeanUtils.copyProperties(course, savedCourse, ignoreProperties);
         return save(savedCourse);
+    }
+
+    @Override
+    public List<Course> findAllWithGraph() {
+        return courseRepository.findAllWithGraph();
     }
 
     @Override

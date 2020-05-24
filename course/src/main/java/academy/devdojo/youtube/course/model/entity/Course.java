@@ -17,12 +17,20 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.NamedAttributeNode;
+import javax.persistence.NamedEntityGraph;
 import javax.persistence.OneToMany;
 import javax.validation.constraints.NotBlank;
 import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.List;
 
+@NamedEntityGraph(
+        name = "courses-with-sections-graph",
+        attributeNodes = {
+                @NamedAttributeNode(value = "sections")
+        }
+)
 @JsonIgnoreProperties(ignoreUnknown = true, value = {"sections"})
 @Entity
 @Data
@@ -39,11 +47,9 @@ public class Course implements AbstractEntity {
     private Long id;
 
     @Column(nullable = false)
-    @NotBlank(message = "Course name can not be null")
     private String name;
 
     @Column(nullable = false)
-    @NotBlank(message = "Course description can not be null")
     private String description;
 
     private String imageUrl;

@@ -45,7 +45,7 @@ public class CourseResource {
     @GetMapping
     @ApiOperation("List all available courses")
     public ResponseEntity<List<CourseResponse>> findAll() {
-        return new ResponseEntity(toResponseList(courseService.findAll()), HttpStatus.OK);
+        return new ResponseEntity(toResponseList(courseService.findAllWithGraph()), HttpStatus.OK);
     }
 
     @PreAuthorize("hasRole('ROLE_ADMIN')")
