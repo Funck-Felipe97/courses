@@ -14,7 +14,6 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
-import javax.validation.constraints.NotNull;
 
 @Entity
 @Data
@@ -32,16 +31,13 @@ public class Account implements AbstractEntity {
     @EqualsAndHashCode.Include
     private Long id;
 
-    @NotNull(message = "The field 'username' is mandatory")
     @Column(nullable = false)
     private String username;
 
     @ToString.Exclude
-    @NotNull(message = "The field 'password' is mandatory")
     @Column(nullable = false)
     private String password;
 
-    @NotNull(message = "The field 'role' is mandatory")
     @Column(nullable = false)
     private String role = "USER";
 

@@ -1,5 +1,8 @@
 package academy.devdojo.youtube.auth.controller;
 
+import academy.devdojo.youtube.auth.model.dto.AccountRequest;
+import academy.devdojo.youtube.auth.model.dto.AccountResponse;
+import academy.devdojo.youtube.auth.model.mapper.AccountMapper;
 import academy.devdojo.youtube.auth.service.AccountService;
 import academy.devdojo.youtube.core.model.Account;
 import lombok.RequiredArgsConstructor;
@@ -22,16 +25,18 @@ import java.security.Principal;
 public class AccountInfoController {
 
     private final AccountService accountService;
+    private final AccountMapper accountMapper;
 
     @PostMapping
-    public ResponseEntity<Account> save(@RequestBody @Valid final Account account) {
-        return new ResponseEntity(accountService.save(account), HttpStatus.CREATED);
+    public ResponseEntity<AccountResponse> save(@RequestBody @Valid final AccountRequest accountRequest) {
+        final Account account = accountMapper.toEntity(accountRequest);
+        return new ResponseEntity(accountMapper.toResponse(accountService.save(account)), HttpStatus.CREATED);
     }
 
     @GetMapping("/info")
-    public ResponseEntity<Account> getUserInfo(Principal principal) {
+    public ResponseEntity<AccountResponse> getUserInfo(Principal principal) {
         Account account = (Account) ((UsernamePasswordAuthenticationToken) principal).getPrincipal();
-        return ResponseEntity.ok(account);
+        return ResponseEntity.ok(accountMapper.toResponse(account));
     }
 
 }
