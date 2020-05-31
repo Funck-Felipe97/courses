@@ -5,8 +5,9 @@ import academy.devdojo.youtube.core.service.ResponseMapper;
 import academy.devdojo.youtube.course.model.dto.request.CourseRequest;
 import academy.devdojo.youtube.course.model.dto.response.CourseResponse;
 import academy.devdojo.youtube.course.model.entity.Course;
-import academy.devdojo.youtube.course.model.mapper.properties.CoursePropertyMapper;
+import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.hateoas.EntityLinks;
 import org.springframework.hateoas.Link;
 import org.springframework.stereotype.Component;
@@ -14,17 +15,12 @@ import org.springframework.stereotype.Component;
 import java.util.List;
 import java.util.stream.Collectors;
 
+@RequiredArgsConstructor(onConstructor = @__(@Autowired))
 @Component
 public class CourseMapper implements RequestMapper<Course, CourseRequest>, ResponseMapper<Course, CourseResponse> {
 
     private final ModelMapper mapper;
     private final EntityLinks entityLinks;
-
-    public CourseMapper(ModelMapper mapper, EntityLinks entityLinks) {
-        this.mapper = mapper;
-        this.entityLinks = entityLinks;
-        this.mapper.addMappings(new CoursePropertyMapper());
-    }
 
     @Override
     public Course toEntity(CourseRequest courseRequest) {
