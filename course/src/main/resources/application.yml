@@ -26,6 +26,7 @@ spring:
       fail-on-empty-beans: false
     deserialization:
       fail-on-unknown-properties: true
+    default-property-inclusion: NON_NULL
 
 eureka:
   instance:

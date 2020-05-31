@@ -5,19 +5,26 @@ import academy.devdojo.youtube.core.service.ResponseMapper;
 import academy.devdojo.youtube.course.model.dto.request.CourseRequest;
 import academy.devdojo.youtube.course.model.dto.response.CourseResponse;
 import academy.devdojo.youtube.course.model.entity.Course;
-import lombok.RequiredArgsConstructor;
+import academy.devdojo.youtube.course.model.mapper.properties.CoursePropertyMapper;
 import org.modelmapper.ModelMapper;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.hateoas.EntityLinks;
+import org.springframework.hateoas.Link;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
 import java.util.stream.Collectors;
 
-@RequiredArgsConstructor(onConstructor = @__(@Autowired))
 @Component
 public class CourseMapper implements RequestMapper<Course, CourseRequest>, ResponseMapper<Course, CourseResponse> {
 
     private final ModelMapper mapper;
+    private final EntityLinks entityLinks;
+
+    public CourseMapper(ModelMapper mapper, EntityLinks entityLinks) {
+        this.mapper = mapper;
+        this.entityLinks = entityLinks;
+        this.mapper.addMappings(new CoursePropertyMapper());
+    }
 
     @Override
     public Course toEntity(CourseRequest courseRequest) {
@@ -31,7 +38,10 @@ public class CourseMapper implements RequestMapper<Course, CourseRequest>, Respo
 
     @Override
     public CourseResponse toResponse(Course course) {
-        return mapper.map(course, CourseResponse.class);
+        final CourseResponse courseResponse = mapper.map(course, CourseResponse.class);
+        final Link selfLink = entityLinks.linkToSingleResource(CourseResponse.class, course.getId());
+        courseResponse.add(selfLink);
+        return courseResponse;
     }
 
     @Override
