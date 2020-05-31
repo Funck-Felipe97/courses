@@ -1,4 +1,4 @@
-package academy.devdojo.youtube.course.security.config;
+package academy.devdojo.youtube.course.config.security;
 
 import academy.devdojo.youtube.core.property.JwtConfiguration;
 import academy.devdojo.youtube.security.config.SecurityTokenConfig;

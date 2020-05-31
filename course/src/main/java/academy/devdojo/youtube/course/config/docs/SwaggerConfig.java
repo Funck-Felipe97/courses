@@ -1,4 +1,4 @@
-package academy.devdojo.youtube.course.docs;
+package academy.devdojo.youtube.course.config.docs;
 
 import academy.devdojo.youtube.core.config.BaseSwaggerConfig;
 import org.springframework.context.annotation.Configuration;
