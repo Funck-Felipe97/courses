@@ -1,6 +1,7 @@
 package academy.devdojo.youtube.course.config.mapper;
 
 import academy.devdojo.youtube.course.model.mapper.properties.CoursePropertyMapper;
+import academy.devdojo.youtube.course.model.mapper.properties.SectionPropertyMapper;
 import org.modelmapper.ModelMapper;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
