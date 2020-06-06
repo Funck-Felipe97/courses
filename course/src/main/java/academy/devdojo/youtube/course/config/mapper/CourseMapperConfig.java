@@ -14,11 +14,16 @@ public class CourseMapperConfig {
     public ModelMapper configure() {
         ModelMapper mapper = new ModelMapper();
         configureCourseMapper(mapper);
+        configureSectionMapper(mapper);
         return mapper;
     }
 
     private void configureCourseMapper(ModelMapper mapper) {
         mapper.addMappings(new CoursePropertyMapper());
+    }
+
+    private void configureSectionMapper(ModelMapper mapper) {
+        mapper.addMappings(new SectionPropertyMapper());
     }
 
 }

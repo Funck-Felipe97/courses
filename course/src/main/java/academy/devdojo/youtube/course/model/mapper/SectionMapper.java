@@ -8,6 +8,7 @@ import academy.devdojo.youtube.course.model.entity.Section;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.hateoas.EntityLinks;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
@@ -18,6 +19,7 @@ import java.util.stream.Collectors;
 public class SectionMapper implements ResponseMapper<Section, SectionResponse>, RequestMapper<Section, SectionRequest> {
 
     private final ModelMapper mapper;
+    private final EntityLinks entityLinks;
 
     @Override
     public Section toEntity(final SectionRequest sectionRequest) {
@@ -31,7 +33,9 @@ public class SectionMapper implements ResponseMapper<Section, SectionResponse>, 
 
     @Override
     public SectionResponse toResponse(final Section section) {
-        return mapper.map(section, SectionResponse.class);
+        final SectionResponse sectionResponse = mapper.map(section, SectionResponse.class);
+        sectionResponse.addSelfLink(section.getCourse().getId());
+        return sectionResponse;
     }
 
     @Override
