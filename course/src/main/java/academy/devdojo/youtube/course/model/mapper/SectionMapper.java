@@ -32,7 +32,7 @@ public class SectionMapper implements ResponseMapper<Section, SectionResponse>, 
     @Override
     public SectionResponse toResponse(final Section section) {
         final SectionResponse sectionResponse = mapper.map(section, SectionResponse.class);
-        sectionResponse.addSelfLink(section.getCourse().getId());
+        sectionResponse.addLinks(section.getCourse().getId());
         return sectionResponse;
     }
 
