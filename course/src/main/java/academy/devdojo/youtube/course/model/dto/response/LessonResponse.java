@@ -23,10 +23,28 @@ public class LessonResponse extends ResourceSupport {
     private String name;
     private String videoUrl;
 
-    public void addSelfLink(Long courseId, Long sectionId) {
+    public void addLinks(Long courseId, Long sectionId) {
+        addSelfLink(courseId, sectionId, this.lessonId);
+        addUpdateLink(courseId, sectionId, this.lessonId);
+        addDeleteLink(courseId, sectionId, this.lessonId);
+    }
+
+    public void addSelfLink(Long courseId, Long sectionId, Long lessonId) {
         add(linkTo(methodOn(LessonResource.class).findAll(courseId, sectionId))
                 .slash(lessonId)
                 .withSelfRel());
+    }
+
+    public void addUpdateLink(Long courseId, Long sectionId, Long lessonId) {
+        add(linkTo(methodOn(LessonResource.class).findAll(courseId, sectionId))
+                .slash(lessonId)
+                .withRel("update"));
+    }
+
+    public void addDeleteLink(Long courseId, Long sectionId, Long lessonId) {
+        add(linkTo(methodOn(LessonResource.class).findAll(courseId, sectionId))
+                .slash(lessonId)
+                .withRel("delete"));
     }
 
 }
