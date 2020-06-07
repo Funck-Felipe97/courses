@@ -8,6 +8,8 @@ import academy.devdojo.youtube.course.model.entity.Student;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.hateoas.EntityLinks;
+import org.springframework.hateoas.Link;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
@@ -18,6 +20,7 @@ import java.util.stream.Collectors;
 public class StudentMapper implements ResponseMapper<Student, StudentResponse>, RequestMapper<Student, StudentRequest> {
 
     private final ModelMapper mapper;
+    private final EntityLinks entityLinks;
 
     @Override
     public Student toEntity(final StudentRequest studentRequest) {
@@ -31,7 +34,10 @@ public class StudentMapper implements ResponseMapper<Student, StudentResponse>, 
 
     @Override
     public StudentResponse toResponse(final Student student) {
-        return mapper.map(student, StudentResponse.class);
+        final StudentResponse studentResponse = mapper.map(student, StudentResponse.class);
+        final Link selfLink = entityLinks.linkToSingleResource(StudentResponse.class, student.getId());
+        studentResponse.add(selfLink);
+        return studentResponse;
     }
 
     @Override
