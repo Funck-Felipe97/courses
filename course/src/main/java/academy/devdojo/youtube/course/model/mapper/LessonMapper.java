@@ -31,7 +31,9 @@ public class LessonMapper implements ResponseMapper<Lesson, LessonResponse>, Req
 
     @Override
     public LessonResponse toResponse(final Lesson lesson) {
-        return mapper.map(lesson, LessonResponse.class);
+        final LessonResponse lessonResponse = mapper.map(lesson, LessonResponse.class);
+        lessonResponse.addSelfLink(lesson.getSection().getCourse().getId(), lesson.getSection().getId());
+        return lessonResponse;
     }
 
     @Override

@@ -1,6 +1,7 @@
 package academy.devdojo.youtube.course.config.mapper;
 
 import academy.devdojo.youtube.course.model.mapper.properties.CoursePropertyMapper;
+import academy.devdojo.youtube.course.model.mapper.properties.LessonPropertyMapper;
 import academy.devdojo.youtube.course.model.mapper.properties.SectionPropertyMapper;
 import org.modelmapper.ModelMapper;
 import org.springframework.context.annotation.Bean;
@@ -16,6 +17,7 @@ public class CourseMapperConfig {
         ModelMapper mapper = new ModelMapper();
         configureCourseMapper(mapper);
         configureSectionMapper(mapper);
+        configureLessonMapper(mapper);
         return mapper;
     }
 
@@ -25,6 +27,10 @@ public class CourseMapperConfig {
 
     private void configureSectionMapper(ModelMapper mapper) {
         mapper.addMappings(new SectionPropertyMapper());
+    }
+
+    private void configureLessonMapper(ModelMapper mapper) {
+        mapper.addMappings(new LessonPropertyMapper());
     }
 
 }

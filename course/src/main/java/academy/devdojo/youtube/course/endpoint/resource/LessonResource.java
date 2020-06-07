@@ -9,6 +9,7 @@ import academy.devdojo.youtube.course.model.mapper.LessonMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationEventPublisher;
+import org.springframework.hateoas.ExposesResourceFor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -25,6 +26,7 @@ import javax.validation.Valid;
 import java.util.List;
 import java.util.Optional;
 
+@ExposesResourceFor(LessonResponse.class)
 @RestController
 @RequestMapping("/v1/courses/{courseId}/sections/{sectionId}/lessons")
 @RequiredArgsConstructor(onConstructor = @__(@Autowired))
