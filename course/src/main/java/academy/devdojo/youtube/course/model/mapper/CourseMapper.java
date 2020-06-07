@@ -20,7 +20,6 @@ import java.util.stream.Collectors;
 public class CourseMapper implements RequestMapper<Course, CourseRequest>, ResponseMapper<Course, CourseResponse> {
 
     private final ModelMapper mapper;
-    private final EntityLinks entityLinks;
 
     @Override
     public Course toEntity(CourseRequest courseRequest) {
@@ -35,8 +34,7 @@ public class CourseMapper implements RequestMapper<Course, CourseRequest>, Respo
     @Override
     public CourseResponse toResponse(Course course) {
         final CourseResponse courseResponse = mapper.map(course, CourseResponse.class);
-        final Link selfLink = entityLinks.linkToSingleResource(CourseResponse.class, course.getId());
-        courseResponse.add(selfLink);
+        courseResponse.addLinks(course.getId());
         return courseResponse;
     }
 
