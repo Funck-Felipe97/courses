@@ -41,3 +41,13 @@ jwt:
   config:
     type: signed
 
+## spring actuator
+management:
+  endpoints:
+    web:
+      exposure:
+        include: "*"
+        exclude: "env,beans"
+      base-path: "/admin/actuator"
+
+
