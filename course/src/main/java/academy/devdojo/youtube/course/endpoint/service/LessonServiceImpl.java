@@ -26,17 +26,13 @@ public class LessonServiceImpl implements LessonService {
 
     @Override
     public List<Lesson> findByCourseAndSection(final Long courseId, final Long sectionId) {
-        Section section = sectionService.findByIdAndCourse(sectionId, courseId).orElseThrow(() ->
-                new NoSuchElementException("Section not found with id: " + sectionId));
-
+        Section section = getSectionByIdAndCourseId(courseId, sectionId);
         return lessonRepository.findAllBySection(section);
     }
 
     @Override
     public Lesson save(Lesson lesson, Long courseId, Long sectionId) {
-        Section section = sectionService.findByIdAndCourse(sectionId, courseId).orElseThrow(() ->
-                new NoSuchElementException("Section not found with id: " + sectionId));
-
+        Section section = getSectionByIdAndCourseId(courseId, sectionId);
         lesson.setSection(section);
         return save(lesson);
     }
@@ -60,6 +56,11 @@ public class LessonServiceImpl implements LessonService {
     public void deleteByIdAndSectionAndCourse(Long id, Long sectionId, Long courseId) {
         Section section = sectionService.findOneByIdAndCourse(sectionId, courseId);
         lessonRepository.deleteByIdAndSection(id, section);
+    }
+
+    private Section getSectionByIdAndCourseId(Long courseId, Long sectionId) {
+        return sectionService.findByIdAndCourse(sectionId, courseId).orElseThrow(() ->
+                new NoSuchElementException("Section not found with id: " + sectionId));
     }
 
     @Override

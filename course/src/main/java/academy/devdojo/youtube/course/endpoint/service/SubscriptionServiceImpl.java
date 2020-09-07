@@ -8,7 +8,7 @@ import academy.devdojo.youtube.course.model.entity.Student;
 import academy.devdojo.youtube.course.model.entity.Subscription;
 import academy.devdojo.youtube.course.model.entity.SubscriptionID;
 import academy.devdojo.youtube.course.repository.SubscriptionRepository;
-import academy.devdojo.youtube.security.utils.*;
+import academy.devdojo.youtube.security.service.SecurityContextService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,11 +23,12 @@ public class SubscriptionServiceImpl implements SubscriptionService {
     private final SubscriptionRepository subscriptionRepository;
     private final StudentService studentService;
     private final CourseService courseService;
+    private final SecurityContextService securityContext;
 
     @Override
     public void register(Long courseId) {
         Course course = courseService.findOne(courseId);
-        Student student = studentService.findOneByAccount(SecurityContextUtil.getAuthenticationAccount().getId());
+        Student student = studentService.findOneByAccount(securityContext.getAuthenticationAccountId());
         SubscriptionID subscriptionID = new SubscriptionID(course, student);
         findById(subscriptionID).ifPresentOrElse(subscription -> {
             throw new RuntimeException("Student already subscribed in course: " + courseId);
